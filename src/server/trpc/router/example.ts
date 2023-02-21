@@ -1,3 +1,4 @@
+import { pbkdf2Sync } from "crypto";
 import { z } from "zod";
 
 import { router, publicProcedure } from "../trpc";
@@ -13,4 +14,11 @@ export const exampleRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.example.findMany();
   }),
+  getreadings: publicProcedure
+    .input(z.object({ text: z.string().nullish() }).nullish())
+    .query(({ input }) => {
+      return {
+        readings: `Hey these are readings for ${input?.text}`
+      }
+    })
 });

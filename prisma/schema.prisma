@@ -55,6 +55,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  topics        Book[]
 }
 
 model VerificationToken {
@@ -65,11 +66,22 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model DayRecord {
-  id        String   @unique
-  date      DateTime
-  fromPages Int
-  toPages   Int
-  total     Int
-  Book      String
+model Book {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  notes     Record[]
+}
+
+model Record {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  content   String   @db.Text
+  book      Book     @relation(fields: [bookId], references: [id])
+  bookId    String
 }
